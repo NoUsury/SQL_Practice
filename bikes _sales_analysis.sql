@@ -8,9 +8,9 @@ ORDER BY PRICE DESC
 LIMIT 5;
 
 -- all products that belong to the 'Mountain Bike' category
-SELECT * FROM productcategories pc
+SELECT * FROM products p
 LEFT JOIN productcategorytext pt
-ON pc.PRODCATEGORYID=pt.PRODCATEGORYID
+ON p.PRODCATEGORYID=pt.PRODCATEGORYID
 WHERE SHORT_DESCR LIKE 'Mountain Bike'
 ;
 
