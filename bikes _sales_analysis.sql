@@ -41,36 +41,6 @@ GROUP BY `YEAR`
 ORDER BY total_sales DESC)
 SELECT *, SUM(total_sales) OVER(ORDER BY total_sales DESC) AS rolling_totalsales FROM ROLLING_TOTAL;
 
--- Which products contribute the most to revenue when the billing status is 'Complete'
-SELECT p.PRODUCTID,pt.SHORT_DESCR AS product_name,ROUND(SUM(NETAMOUNT),2) AS total_revenue FROM salesorders2 s 
-LEFT JOIN products p 
-ON s.PARTNERID=p.SUPPLIER_PARTNERID
-LEFT JOIN productcategorytext pt
-ON p.PRODCATEGORYID=pt.PRODCATEGORYID
-WHERE BILLINGSTATUS='C'
-GROUP BY p.PRODUCTID, product_name
-ORDER BY total_revenue DESC;
-
--- How many business partners are there for each partner role?
-SELECT PARTNERROLE, COUNT(*) AS no_of_partners FROM businesspartners
-GROUP BY PARTNERROLE ;
-
--- List the employees who have 'W' in their first name 
-SELECT EMPLOYEEID, CONCAT(NAME_FIRST, " ", NAME_LAST) AS full_name FROM employees
-WHERE NAME_FIRST LIKE '%W%';
-
--- Find the number of employees for each sex.
-SELECT SEX,COUNT(*) no_employee 
-FROM employees
-GROUP BY sex;
-
--- Q27: List the top 5 employees who have created the most sales orders.
-SELECT e.EMPLOYEEID, COUNT(s.SALESORDERID) AS sales_count FROM employees e
-LEFT JOIN salesorders2 s
-ON e.EMPLOYEEID=s.CREATEDBY
-GROUP BY EMPLOYEEID
-ORDER BY sales_count DESC
-LIMIT 5;
 
 
 
