@@ -64,13 +64,38 @@ SELECT SEX,COUNT(*) no_employee
 FROM employees
 GROUP BY sex;
 
--- Q27: List the top 5 employees who have created the most sales orders.
+-- List the top 5 employees who have created the most sales orders.
 SELECT e.EMPLOYEEID, COUNT(s.SALESORDERID) AS sales_count FROM employees e
 LEFT JOIN salesorders2 s
 ON e.EMPLOYEEID=s.CREATEDBY
 GROUP BY EMPLOYEEID
 ORDER BY sales_count DESC
 LIMIT 5;
+
+-- top-selling product within each category along with its total sales amount.
+WITH TOP_SELLING AS (
+SELECT  p.PRODUCTID,
+    p.PRODCATEGORYID,
+    p.CURRENCY,
+    p.PRICE,
+    pct.SHORT_DESCR,
+    SUM(soi.QUANTITY * p.PRICE) AS TotalSalesAmount
+    FROM products p INNER JOIN productcategories pc
+on p.PRODCATEGORYID=pc.PRODCATEGORYID
+INNER JOIN salesorderitems soi
+on soi.PRODUCTID=p.PRODUCTID
+INNER JOIN productcategorytext pct
+ON p.PRODCATEGORYID=pct.PRODCATEGORYID
+GROUP BY p.PRODUCTID,
+    p.PRODCATEGORYID,
+    p.CURRENCY,
+    p.PRICE,
+    pct.SHORT_DESCR), TOP_SELLING_PRODUCT AS (
+SELECT *, RANK() OVER(PARTITION BY PRODCATEGORYID ORDER BY TotalSalesAmount) as sales_ranking   
+FROM TOP_SELLING )
+SELECT PRODUCTID,SHORT_DESCR AS PRODUCT_NAME, TotalSalesAmount FROM TOP_SELLING_PRODUCT
+WHERE sales_ranking=1;
+
 
 
 
